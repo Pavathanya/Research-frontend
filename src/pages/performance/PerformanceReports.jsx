@@ -14,20 +14,27 @@ const ReportCard = ({ title, date }) => (
     </Card>
 );
 
+const reports = [
+    { title: 'Q4 2025 Performance Summary', date: '2026-01-01' },
+    { title: 'December 2025 Team Productivity', date: '2026-01-02' },
+    { title: 'Annual Talent Review 2025', date: '2025-12-30' },
+    { title: 'Monthly Engagement Report - Nov 2025', date: '2025-11-30' },
+    { title: 'Attrition Analysis Q4 2025', date: '2026-01-03' },
+    { title: 'Top Performers Spotlight - 2025', date: '2026-01-04' },
+    { title: 'Manager 1:1 Effectiveness - Dec 2025', date: '2025-12-28' },
+    { title: 'Skill Gap Analysis - Engineering', date: '2026-01-05' },
+];
+
 const PerformanceReports = () => {
     return (
         <Box>
             <PageHeader title="Performance Reports" subtitle="Monthly & Quarterly Analytics" />
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ReportCard title="Q4 2025 Performance Summary" date="2026-01-01" />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ReportCard title="December 2025 Team Productivity" date="2026-01-02" />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ReportCard title="Annual Talent Review 2025" date="2025-12-30" />
-                </Grid>
+                {reports.map((r, idx) => (
+                    <Grid item xs={12} sm={6} md={4} key={idx}>
+                        <ReportCard title={r.title} date={r.date} />
+                    </Grid>
+                ))}
             </Grid>
         </Box>
     );
