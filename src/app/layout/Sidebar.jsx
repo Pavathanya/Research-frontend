@@ -87,32 +87,16 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                 </ListItemButton>
 
                 {/* Recruitment */}
-                <ListItemButton onClick={() => handleClick(setOpenRecruitment, openRecruitment)}>
+                <ListItemButton onClick={() => navigate('/recruitment/dashboard')} selected={isSelected('/recruitment/dashboard')}>
                     <ListItemIcon sx={{ color: 'inherit' }}><WorkIcon /></ListItemIcon>
                     <ListItemText primary="Recruitment" />
-                    {openRecruitment ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                <Collapse in={openRecruitment} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {navItem('Jobs', '/recruitment/jobs', <WorkIcon />)}
-                        {navItem('CV Screening', '/recruitment/cv-screening', <CVIcon />)}
-                        {navItem('Shortlist', '/recruitment/shortlist', <ShortlistIcon />)}
-                    </List>
-                </Collapse>
 
                 {/* Interviews */}
-                <ListItemButton onClick={() => handleClick(setOpenInterview, openInterview)}>
+                <ListItemButton onClick={() => navigate('/interview/dashboard')} selected={isSelected('/interview/dashboard')}>
                     <ListItemIcon sx={{ color: 'inherit' }}><MicIcon /></ListItemIcon>
                     <ListItemText primary="Interviews" />
-                    {openInterview ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                <Collapse in={openInterview} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {navItem('Dashboard', '/interview/dashboard', <DashboardIcon />)}
-                        {navItem('Question Bank', '/interview/questions', <QuestionIcon />)}
-                        {/* Live Sim usually linked from dashboard but can be direct */}
-                    </List>
-                </Collapse>
 
                 {/* Employees */}
                 <ListItemButton onClick={() => navigate('/employees/directory')} selected={isSelected('/employees/directory')}>
@@ -121,36 +105,19 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                 </ListItemButton>
 
                 {/* Performance */}
-                <ListItemButton onClick={() => handleClick(setOpenPerformance, openPerformance)}>
+                <ListItemButton onClick={() => navigate('/performance/dashboard')} selected={isSelected('/performance/dashboard')}>
                     <ListItemIcon sx={{ color: 'inherit' }}><PerformanceIcon /></ListItemIcon>
                     <ListItemText primary="Performance" />
-                    {openPerformance ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                <Collapse in={openPerformance} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {navItem('Dashboard', '/performance/dashboard', <DashboardIcon />)}
-                        {navItem('Prediction', '/performance/feedback-prediction', <PredictionIcon />)}
-                        {navItem('Reports', '/performance/reports', <ReportIcon />)}
-                    </List>
-                </Collapse>
 
                 {/* Retention */}
-                <ListItemButton onClick={() => handleClick(setOpenRetention, openRetention)}>
+                <ListItemButton onClick={() => navigate('/retention/dashboard')} selected={isSelected('/retention/dashboard')}>
                     <ListItemIcon sx={{ color: 'inherit' }}><WarningIcon /></ListItemIcon>
                     <ListItemText primary="Retention" />
-                    {openRetention ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                <Collapse in={openRetention} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {navItem('Dashboard', '/retention/dashboard', <DashboardIcon />)}
-                        {navItem('Early Warnings', '/retention/alerts', <WarningIcon />)}
-                        {navItem('Actions', '/retention/actions', <ActionIcon />)}
-                        {navItem('Explainability', '/retention/explainability', <ExplainIcon />)}
-                    </List>
-                </Collapse>
 
                 {/* Compliance */}
-                <ListItemButton onClick={() => handleClick(setOpenCompliance, openCompliance)}>
+                {/* <ListItemButton onClick={() => handleClick(setOpenCompliance, openCompliance)}>
                     <ListItemIcon sx={{ color: 'inherit' }}><ComplianceIcon /></ListItemIcon>
                     <ListItemText primary="Compliance" />
                     {openCompliance ? <ExpandLess /> : <ExpandMore />}
@@ -160,7 +127,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                         {navItem('Bias & Fairness', '/compliance/bias-fairness', <BiasIcon />)}
                         {navItem('Audit Logs', '/compliance/audit-logs', <AuditIcon />)}
                     </List>
-                </Collapse>
+                </Collapse> */}
 
                 {/* Settings */}
                 <ListItemButton onClick={() => handleClick(setOpenSettings, openSettings)}>

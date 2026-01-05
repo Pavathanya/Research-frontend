@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Paper, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button } from '@mui/material';
+import { Box, Grid, Paper, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button, Divider } from '@mui/material';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     LineChart, Line, Legend, PieChart, Pie, Cell
@@ -7,20 +7,24 @@ import {
 import { Warning } from '@mui/icons-material';
 import { mockPerformanceStats } from '../../data/mockPerformance';
 import { PageHeader } from '../../components/common/SharedComponents';
+import FeedbackPrediction from './FeedbackPrediction';
+import PerformanceReports from './PerformanceReports';
 
 const COLORS = ['#4caf50', '#ff9800', '#f44336'];
 
 const PerformanceDashboard = () => {
     return (
         <Box>
-            <PageHeader title="Performance Dashboard" subtitle="Departmental Overview & Issues" />
+            <PageHeader title="Performance Dashboard" subtitle="Departmental Overview & Advanced Analytics" />
 
+            {/* Section 1: Overview */}
+            <Typography variant="h5" gutterBottom sx={{ mt: 2, mb: 2 }}>Departmental Overview</Typography>
             <Grid container spacing={3}>
                 {/* 1. Performance Score (Bar Chart) - Half Width */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 3, height: 500, width: 500 }}>
+                    <Paper sx={{ p: 3, height: 500, width: '100%' }}>
                         <Typography variant="h6" gutterBottom>Performance By Department (Score)</Typography>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width={500} height={400}>
                             <BarChart data={mockPerformanceStats.departmentPerformance} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
@@ -35,9 +39,9 @@ const PerformanceDashboard = () => {
 
                 {/* 2. Productivity Prediction (Line Chart) - Half Width */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 3, height: 500, width: 500 }}>
+                    <Paper sx={{ p: 3, height: 500, width: '100%' }}>
                         <Typography variant="h6" gutterBottom>Productivity Prediction Trend</Typography>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width={500} height={400}>
                             <LineChart data={mockPerformanceStats.monthlyTrend} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
@@ -53,9 +57,9 @@ const PerformanceDashboard = () => {
 
                 {/* 3. Performance Level (Pie Chart) - Half Width */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 3, height: 400, width: 700 }}>
+                    <Paper sx={{ p: 3, height: 400, width: '100%' }}>
                         <Typography variant="h6" gutterBottom>Performance Level Distribution</Typography>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width={500} height={400}>
                             <PieChart>
                                 <Pie
                                     data={mockPerformanceStats.performanceLevelDistribution}
@@ -81,7 +85,7 @@ const PerformanceDashboard = () => {
 
                 {/* Alerts Section - Half Width to balance grid */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 3, height: 400, width: 400 }}>
+                    <Paper sx={{ p: 3, height: 400, width: '100%' }}>
                         <Typography variant="h6" gutterBottom color="error">Low Performance Alerts</Typography>
                         <List>
                             <ListItem>
@@ -97,8 +101,17 @@ const PerformanceDashboard = () => {
                         </List>
                     </Paper>
                 </Grid>
-
             </Grid>
+
+            <Divider sx={{ my: 4, mt: 8 }} />
+
+            {/* Section 2: Prediction */}
+            <FeedbackPrediction />
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Section 3: Reports */}
+            <PerformanceReports />
         </Box>
     );
 };

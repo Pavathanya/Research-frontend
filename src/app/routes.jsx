@@ -7,6 +7,7 @@ import Jobs from '../pages/recruitment/Jobs';
 import CVScreening from '../pages/recruitment/CVScreening';
 import CandidateProfile from '../pages/recruitment/CandidateProfile';
 import Shortlist from '../pages/recruitment/Shortlist';
+import RecruitmentDashboard from '../pages/recruitment/RecruitmentDashboard';
 import InterviewDashboard from '../pages/interview/InterviewDashboard';
 import QuestionBank from '../pages/interview/QuestionBank';
 import LiveInterviewSim from '../pages/interview/LiveInterviewSim';
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
             { path: '/', element: <Overview /> },
 
             // Recruitment
+            { path: 'recruitment/dashboard', element: <RecruitmentDashboard /> },
             { path: 'recruitment/jobs', element: <Jobs /> },
             { path: 'recruitment/cv-screening', element: <CVScreening /> },
             { path: 'recruitment/candidates/:id', element: <CandidateProfile /> },

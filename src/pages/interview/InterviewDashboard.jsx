@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, IconButton, Tooltip, Divider } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Videocam, Assessment } from '@mui/icons-material';
 import { mockInterviews } from '../../data/mockInterviews';
 import { PageHeader, StatusChip } from '../../components/common/SharedComponents';
 import { useNavigate } from 'react-router-dom';
+import QuestionBank from './QuestionBank';
 
 const InterviewDashboard = () => {
     const navigate = useNavigate();
@@ -62,6 +63,11 @@ const InterviewDashboard = () => {
                 pageSize={10}
                 autoHeight
             />
+
+            <Divider sx={{ my: 4, mt: 8 }} />
+
+            {/* Section 2: Question Bank */}
+            <QuestionBank />
         </Box>
     );
 };

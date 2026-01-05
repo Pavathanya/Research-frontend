@@ -10,13 +10,17 @@ import {
     CircularProgress,
     Divider,
     Stack,
-    Alert
+    Alert,
+    Snackbar
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { PageHeader, StatusChip } from '../../components/common/SharedComponents';
 import { mockRetention } from '../../data/mockRetention';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Psychology, Speed } from '@mui/icons-material';
+import { Psychology, Speed, CloudUpload } from '@mui/icons-material';
+import EarlyWarningAlerts from './EarlyWarningAlerts';
+import RetentionActions from './RetentionActions';
+import Explainability from './Explainability';
 
 const JOB_ROLES = [
     'Research Scientist',
@@ -94,6 +98,21 @@ const RetentionDashboard = () => {
             setPrediction({ score: Math.round(riskScore), level });
             setLoading(false);
         }, 1500);
+    };
+
+    // Bulk Upload Logic
+    const [bulkLoading, setBulkLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+
+    const handleBulkUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setBulkLoading(true);
+            setTimeout(() => {
+                setBulkLoading(false);
+                setSnackbar({ open: true, message: `Successfully processed ${file.name}. Risk scores updated.` });
+            }, 2000);
+        }
     };
 
     const columns = [
@@ -322,6 +341,39 @@ const RetentionDashboard = () => {
                 </Grid>
             </Paper>
 
+            {/* Bulk Upload Section */}
+            <Paper sx={{ mb: 4, p: 4, borderRadius: 2 }}>
+                <Grid container spacing={4} alignItems="center">
+                    <Grid item xs={12} md={8}>
+                        <Typography variant="h6" display="flex" alignItems="center" gap={1}>
+                            <CloudUpload color="primary" /> Bulk Risk Analysis
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Upload a CSV file containing employee records to run the attrition model in batch mode.
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={4} display="flex" justifyContent="flex-end">
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<CloudUpload />}
+                            disabled={bulkLoading}
+                            size="large"
+                        >
+                            {bulkLoading ? 'Processing...' : 'Upload CSV Data'}
+                            <input type="file" hidden accept=".csv" onChange={handleBulkUpload} />
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Paper>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={4000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                message={snackbar.message}
+            />
+
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid item xs={12} md={4}>
                     <Paper sx={{ p: 3, height: 300 }}>
@@ -350,6 +402,21 @@ const RetentionDashboard = () => {
             <Box sx={{ height: 400 }}>
                 <DataGrid rows={mockRetention} columns={columns} getRowId={(r) => r.employeeId} />
             </Box>
+
+            <Divider sx={{ my: 4, mt: 8 }} />
+
+            {/* Section 2: Early Warning Alerts */}
+            <EarlyWarningAlerts />
+
+            <Divider sx={{ my: 4, mt: 8 }} />
+
+            {/* Section 3: Actions */}
+            <RetentionActions />
+
+            <Divider sx={{ my: 4, mt: 8 }} />
+
+            {/* Section 4: Explainability */}
+            <Explainability />
         </Box>
     );
 };
