@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flasgger import Swagger
+from flasgger import Swagger, swag_from
 import os
 import pandas as pd
 import numpy as np
@@ -101,36 +101,28 @@ def health():
         return jsonify(info)
 
 
-@app.route('/predict', methods=['POST'])
+@swag_from({
+    'tags': ['productivity'],
+    'parameters': [
+        {
+            'name': 'file',
+            'in': 'formData',
+            'type': 'file',
+            'required': False,
+            'description': 'CSV file to predict on'
+        }
+    ],
+    'responses': {
+        200: {'description': 'Prediction results'},
+        400: {'description': 'Bad request'},
+        500: {'description': 'Server error'}
+    }
+})
+@app.route('/productivitypredict', methods=['POST'])
 def predict():
-    """Make predictions
+    """Make predictions (file upload only)
 
-    Accepts either a multipart file (CSV) with key `file` or a JSON array of records.
-
-    ---
-    consumes:
-      - multipart/form-data
-      - application/json
-    parameters:
-      - name: file
-        in: formData
-        type: file
-        required: false
-        description: CSV file to predict on
-      - name: body
-        in: body
-        required: false
-        schema:
-          type: array
-          items:
-            type: object
-    responses:
-      200:
-        description: Prediction results
-      400:
-        description: Bad request
-      500:
-        description: Server error
+    Minimal, consistently-indented implementation of the prediction endpoint.
     """
 
     if MODEL is None:
@@ -147,7 +139,6 @@ def predict():
         except Exception as e:
             return jsonify({"error": "Failed to read CSV", "detail": str(e)}), 400
     else:
-        # try JSON
         try:
             data = request.get_json()
             if data is None:
@@ -159,57 +150,52 @@ def predict():
     if df is None or df.shape[0] == 0:
         return jsonify({"error": "Empty input data"}), 400
 
-    # Preprocess if preprocessor available
+    # Preprocess
     X_new = None
     if PREPROCESSOR is not None:
         try:
             X_new = PREPROCESSOR.transform(df)
         except Exception as e:
-            # common incompatibility with sklearn versions: missing internal attribute on OneHotEncoder
             msg = str(e)
+            # attempt best-effort patch for OneHotEncoder attribute mismatches
             if "_drop_idx_after_grouping" in msg or "_drop_idx" in msg:
                 try:
-                    # attempt to patch OneHotEncoder instances inside the ColumnTransformer
                     def _patch_onehots(pt):
+                        patched = 0
                         try:
-                            from sklearn.preprocessing import OneHotEncoder
+                            from sklearn.pipeline import Pipeline
                         except Exception:
                             return 0
-                        patched = 0
-                        # ColumnTransformer stores transformers in attribute `transformers_` after fit
                         for name, trans, cols in getattr(pt, 'transformers_', []):
-                            # transformers_ entries can be ('name', estimator, columns)
                             est = trans
-                            if hasattr(est, 'categories_') and est.__class__.__name__ == 'OneHotEncoder':
-                                if not hasattr(est, '_drop_idx_after_grouping'):
-                                    setattr(est, '_drop_idx_after_grouping', None)
-                                    patched += 1
+                            if est.__class__.__name__ == 'OneHotEncoder' and not hasattr(est, '_drop_idx_after_grouping'):
+                                setattr(est, '_drop_idx_after_grouping', None)
+                                patched += 1
                             else:
-                                # some transformers are pipelines
                                 try:
-                                    from sklearn.pipeline import Pipeline
                                     if isinstance(est, Pipeline):
-                                        for step_name, step_est in est.steps:
-                                            if step_est.__class__.__name__ == 'OneHotEncoder' and not hasattr(step_est, '_drop_idx_after_grouping'):
-                                                setattr(step_est, '_drop_idx_after_grouping', None)
+                                        for _, step in est.steps:
+                                            if step.__class__.__name__ == 'OneHotEncoder' and not hasattr(step, '_drop_idx_after_grouping'):
+                                                setattr(step, '_drop_idx_after_grouping', None)
                                                 patched += 1
                                 except Exception:
                                     pass
                         return patched
 
-                    patched_count = 0
-                    # preprocessor may be a ColumnTransformer or Pipeline
+                    patched = 0
                     if hasattr(PREPROCESSOR, 'transformers_'):
-                        patched_count += _patch_onehots(PREPROCESSOR)
+                        patched += _patch_onehots(PREPROCESSOR)
                     else:
-                        # try pipeline
-                        from sklearn.pipeline import Pipeline
-                        if isinstance(PREPROCESSOR, Pipeline):
-                            for _, step in PREPROCESSOR.steps:
-                                if hasattr(step, 'transformers_'):
-                                    patched_count += _patch_onehots(step)
+                        try:
+                            from sklearn.pipeline import Pipeline
+                            if isinstance(PREPROCESSOR, Pipeline):
+                                for _, step in PREPROCESSOR.steps:
+                                    if hasattr(step, 'transformers_'):
+                                        patched += _patch_onehots(step)
+                        except Exception:
+                            pass
 
-                    if patched_count > 0:
+                    if patched > 0:
                         try:
                             X_new = PREPROCESSOR.transform(df)
                         except Exception as e2:
@@ -221,7 +207,6 @@ def predict():
             else:
                 return jsonify({"error": "Preprocessing failed", "detail": msg}), 400
     else:
-        # If no preprocessor, try to pass raw numeric data
         try:
             X_new = df.select_dtypes(include=[np.number]).values
             if X_new.shape[0] == 0:
@@ -233,7 +218,6 @@ def predict():
     expected_dim = None
     try:
         if hasattr(MODEL, 'input_shape') and MODEL.input_shape is not None:
-            # handle Sequential or Functional models
             if isinstance(MODEL.input_shape, (list, tuple)):
                 expected_dim = MODEL.input_shape[-1]
             else:

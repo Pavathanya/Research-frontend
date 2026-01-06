@@ -1,0 +1,37 @@
+{
+  "definitions": {},
+  "info": {
+    "description": "powered by Flasgger",
+    "termsOfService": "/tos",
+    "title": "A swagger API",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "description": "<br/>Returns model and preprocessor status.<br/><br/>",
+        "responses": {
+          "200": {
+            "description": "Health information",
+            "schema": {
+              "properties": {
+                "dataset": {
+                  "type": "object"
+                },
+                "model_loaded": {
+                  "type": "boolean"
+                },
+                "preprocessor_loaded": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Health check"
+      }
+    }
+  },
+  "swagger": "2.0"
+}

@@ -1,0 +1,65 @@
+{
+  "definitions": {},
+  "info": {
+    "description": "powered by Flasgger",
+    "termsOfService": "/tos",
+    "title": "A swagger API",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "description": "<br/>Returns model and preprocessor status.<br/><br/>",
+        "responses": {
+          "200": {
+            "description": "Health information",
+            "schema": {
+              "properties": {
+                "dataset": {
+                  "type": "object"
+                },
+                "model_loaded": {
+                  "type": "boolean"
+                },
+                "preprocessor_loaded": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Health check"
+      }
+    },
+    "/productivitypredict": {
+      "post": {
+        "parameters": [
+          {
+            "description": "CSV file to predict on",
+            "in": "formData",
+            "name": "file",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prediction results"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "summary": "Make predictions (file upload only)\n\nMinimal, consistently-indented implementation of the prediction endpoint.",
+        "tags": [
+          "productivity"
+        ]
+      }
+    }
+  },
+  "swagger": "2.0"
+}
