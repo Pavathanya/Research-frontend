@@ -8,6 +8,14 @@ import joblib
 app = Flask(__name__)
 Swagger(app)
 
+# register retention blueprint (from retention_api.py)
+try:
+    from retention_api import register_retention
+    register_retention(app)
+except Exception:
+    # if import fails, continue — retention endpoints won't be available
+    pass
+
 BASE_DIR = os.path.dirname(__file__)
 MODEL_PATH = os.path.join(BASE_DIR, "Models", "advanced_feedback_model.h5")
 DATASET_PATH = os.path.join(BASE_DIR, "Dataset", "DataSet_New.csv")
